@@ -1,0 +1,14 @@
+    1  1573472774 exit
+    2  1573575976 tmux a
+    3  1573575979 exit
+    4  1573576446 numactl --hardware
+    5  1573576454 lscpu
+    6  1573576482 exit
+    7  1573641079 virt-customize -v --root-password password:Redhat01 -a /home/stack/rhel-guest-image-7-6-210-x86-64-qcow2
+    8  1573641568 export LIBGUESTFS_BACKEND=direct
+    9  1573641571 virt-customize -v --root-password password:Redhat01 -a /home/stack/rhel-guest-image-7-6-210-x86-64-qcow2
+   10  1573641651 ls
+   11  1573641737 openstack overcloud image upload --update-existing
+   12  1573641877 grep -inr "server crea" tht-dpdk/
+   13  1573641883 vi tht-dpdk/scripts/helpers/launch.sh
+   14  1573642138 history > history2

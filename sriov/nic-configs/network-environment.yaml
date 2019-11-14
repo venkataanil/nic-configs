@@ -1,0 +1,66 @@
+resource_registry:
+  OS::TripleO::ComputeOvsDpdkSriov::Net::SoftwareConfig: /home/stack/nic-configs/computeovsdpdksriov.yaml
+  OS::TripleO::Controller::Net::SoftwareConfig: /home/stack/nic-configs/controller.yaml
+
+parameter_defaults:
+  NtpServer: "clock.redhat.com"
+  SshServerOptions:
+    UseDns: 'no'
+  ControlPlaneDefaultRoute: "192.168.24.1"
+  ControlPlaneSubnetCidr: "24"
+  DnsServers: ['10.1.32.3']
+  EC2MetadataIp: "192.168.24.1"
+
+  NeutronExternalNetworkBridge: "'br-ex'"
+  NeutronOVSFirewallDriver: openvswitch
+  NeutronTunnelTypes: "vxlan"
+  NeutronNetworkType: ['vxlan', 'vlan']
+  NeutronBridgeMappings: "datacentre:br-ex,sriov-1:br-sriov1,sriov-2:br-sriov2"
+  NeutronFlatNetworks: "datacentre"
+  NeutronNetworkVLANRanges: 
+    - sriov-1:600:600
+    - sriov-2:601:601
+  ControllerCount: 1
+  OvercloudControllerFlavor: Hcontroller
+  ComputeOvsDpdkSriovCount: 1
+  OvercloudComputeOvsDpdkSriovFlavor: Hcomputesriov
+  ControllerHostnameFormat: 'controller-%index%'
+  ComputeOvsDpdkSriovHostnameFormat: 'compute-%index%'
+
+  ComputeOvsDpdkSriovParameters:
+    NeutronMechanismDrivers: ['openvswitch','sriovnicswitch']
+    NeutronPhysicalDevMappings: 
+      - sriov-1:enp94s0f0
+      - sriov-2:enp94s0f3
+    NovaPCIPassthrough:
+      - devname: "enp94s0f0"
+        trusted: "true"
+        physical_network: "sriov-1"
+      - devname: "enp94s0f3"
+        trusted: "true"
+        physical_network: "sriov-2"
+    NeutronSriovNumVFs:
+      - enp94s0f0:10
+      - enp94s0f3:10
+    KernelArgs: "default_hugepagesz=1GB hugepagesz=1G hugepages=32 iommu=pt intel_iommu=on isolcpus=1-15,33-47,17-31,49-63"
+    IsolCpusList: "1-15,33-47,17-31,49-63"
+    TunedProfileName: "cpu-partitioning"
+    NovaVcpuPinSet: '1-15,33-47,17-31,49-63'
+    NovaReservedHostMemory: 4096
+
+  
+  NovaSchedulerAvailableFilters:
+    - "nova.scheduler.filters.all_filters"
+    - "nova.scheduler.filters.pci_passthrough_filter.PciPassthroughFilter"
+  NovaSchedulerDefaultFilters:
+    - "RetryFilter"
+    - "AvailabilityZoneFilter"
+    - "RamFilter"
+    - "ComputeFilter"
+    - "ComputeCapabilitiesFilter"
+    - "ImagePropertiesFilter"
+    - "ServerGroupAntiAffinityFilter"
+    - "ServerGroupAffinityFilter"
+    - "PciPassthroughFilter"
+    - "NUMATopologyFilter"
+    - "AggregateInstanceExtraSpecsFilter"

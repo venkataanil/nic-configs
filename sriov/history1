@@ -1,0 +1,257 @@
+    1  ls
+    2  vi undercloud_install.log
+    3  source stackrc 
+    4  nova list
+    5  neutron net-list
+    6  ls
+    7  sudo yum install rhosp-director-images rhosp-director-images-ipa -y
+    8  mkdir images
+    9  cd images/
+   10  for i in /usr/share/rhosp-director-images/overcloud-full-latest-13.0.tar /usr/share/rhosp-director-images/ironic-python-agent-latest-13.0.tar; do tar -xvf $i; donefor i in /usr/share/rhosp-director-images/overcloud-full-latest-13.0.tar /usr/share/rhosp-director-images/ironic-python-agent-latest-13.0.tar; do tar -xvf $i; done
+   11  sudo yum install rhosp-director-images rhosp-director-images-ipa -y
+   12  ls /usr/share/rhosp-director-images/overcloud-full-latest-13.0.tar
+   13  ls /usr/share/rhosp-director-images/ironic-python-agent-latest-13.0.tar
+   14  for i in /usr/share/rhosp-director-images/overcloud-full-latest-13.0.tar /usr/share/rhosp-director-images/ironic-python-agent-latest-13.0.tar; do tar -xvf $i; done
+   15  cd 
+   16  mkdir ~/templates
+   17  cd images/
+   18  openstack overcloud image upload --image-path /home/stack/images/
+   19  openstack image list
+   20  cat /etc/resolv.conf 
+   21  openstack subnet list
+   22  openstack subnet set --dns-nameserver 10.1.32.3 --dns-nameserver 10.1.32.4 5b1ee297-a4a8-44e1-aac5-4281ef9b7bbc
+   23  vi openstack subnet set --dns-nameserver 10.1.32.3 --dns-nameserver 10.1.32.4 ctlplane-subnetctlplane-subnet
+   24  openstack subnet set --dns-nameserver 10.1.32.3 --dns-nameserver 10.1.32.4 ctlplane-subnetctlplane-subnet
+   25  openstack subnet set --dns-nameserver 10.1.32.3 --dns-nameserver 10.1.32.4 ctlplane-subnet
+   26  openstack subnetopenstack subnet show 5b1ee297-a4a8-44e1-aac5-4281ef9b7bbc
+   27  openstack subnet show 5b1ee297-a4a8-44e1-aac5-4281ef9b7bbc
+   28  vi openstack subnet set --dns-nameserver 10.1.32.3  ctlplane-subnetctlplane-subnet
+   29   openstack subnet set --dns-nameserver 10.1.32.3  ctlplane-subnetctlplane-subnet
+   30  openstack subnet set --dns-nameserver 10.1.32.3  ctlplane-subnet
+   31  openstack subnet show 5b1ee297-a4a8-44e1-aac5-4281ef9b7bbc
+   32  vi ~/instackenv.json
+   33  exit
+   34  ls
+   35  source stackrc 
+   36  vi ~/instackenv.json
+   37  openstack overcloud node import ~/instackenv.json
+   38  openstack overcloud node introspect --all-manageable --provide
+   39  cat /etc/sysconfig/docker 
+   40  sudo vi /etc/sysconfig/docker
+   41  sudo systemctl restart docker
+   42  vi containers.sh
+   43  chmod 777 containers.sh
+   44  cat containers.sh 
+   45  ./containers.sh 
+   46  openstack overcloud roles generate -o ~/roles_data.yaml Controller ComputeOvsDpdkSriov
+   47  vi roles_data.yaml 
+   48  git clone https://github.com/krsacme/tht-dpdk
+   49  ls tht-dpdk/
+   50  ls tht-dpdk/osp13_ref/
+   51  ls tht-dpdk/
+   52  ls tht-dpdk/osp14_ref/
+   53  vi tht-dpdk/osp14_ref/environment.yaml 
+   54  vi tht-dpdk/osp14_ref/ml2-ovs-dpdk-env.yaml 
+   55  ls osp13_ref/
+   56  cat osp13_ref/overcloud_deploy.sh
+   57  ls tht-dpdk/osp14_ref/overcloud_deploy.sh 
+   58  cat tht-dpdk/osp14_ref/overcloud_deploy.sh 
+   59  vi /usr/share/openstack-tripleo-heat-templates/plan-samples/plan-environment-derived-params.yaml
+   60  ls *.sh
+   61  chmod 777 overcloud_deploy.sh 
+   62  ./overcloud_deploy.sh
+   63  cat ./overcloud_deploy.sh
+   64  vi ./overcloud_deploy.sh
+   65  ./overcloud_deploy.sh
+   66  ls
+   67  cat overcloud_deploy.sh
+   68  rm -f deploy2.log
+   69  ./overcloud_deploy.sh
+   70  ls
+   71  vi ./overcloud_deploy.sh
+   72  ./overcloud_deploy.sh
+   73  openstack stack delete overcloud -y
+   74  openstack overcloud delete overcloud -y
+   75  ./overcloud_deploy.sh
+   76  openstack overcloud delete overcloud -y
+   77  ./overcloud_deploy.sh
+   78  source overcloudrc
+   79  nova list
+   80  vi overcloudrc
+   81  vi nic-configs/controller.yaml 
+   82  ip a | grep enp94s0f2
+   83  ip a
+   84  vi ~/.ssh/authorized_keys 
+   85  #hi
+   86  ls
+   87  cat containers.sh 
+   88  cd nic-configs/
+   89  ls
+   90  vi network-environment.yaml 
+   91  sudo su
+   92  vi network-environment.yaml 
+   93  ls
+   94  cd 
+   95  ls
+   96  vi compute_intro
+   97  lscpu
+   98  vi compute_intro
+   99  lscpu > lscpu
+  100  vi compute_intro
+  101  grep -inr '"cpu":' compute_intro
+  102  vi compute_intro
+  103  ls
+  104  cd nic-configs/
+  105  vi network-environment.yaml 
+  106  ls
+  107  vi controller.yaml 
+  108  vi computeovsdpdksriov.yaml
+  109  ls
+  110  source ~/stackrc 
+  111  ls
+  112  noa list
+  113  nova list
+  114  ssh heat-admin@192.168.24.9
+  115  vi network-environment.yaml 
+  116  udevadm info 
+  117  ip a
+  118  ethtool -i enp94s0f0
+  119  source ~/overcloudrc
+  120  vi controller.yaml 
+  121  sudo ip link add link enp94s0f2 name enp94s0f2.10 type vlan id 10
+  122  sudo ip link set dev enp94s0f2.10 up
+  123  sudo ip a a 10.0.0.1/16 brd 10.0.255.255 dev enp94s0f2.10
+  124  cd 
+  125  cat overcloudrc
+  126  ping 10.0.0.27
+  127  source overcloudrc
+  128  nova list
+  129  openstack image create rhel --container-format bare --disk-format qcow2 --file rhel-server-7.4-x86_64-kvm.qcow2
+  130  wget https://url.corp.redhat.com/rhel-guest-image-7-6-210-x86-64-qcow2
+  131  ls
+  132  vi ~/.ssh/authorized_keys 
+  133  ip a
+  134  ls
+  135  openstack image create rhel --container-format bare --disk-format qcow2 --file rhel-guest-image-7-6-210-x86-64-qcow2
+  136  openstack keypair create test >test.pem
+  137  chmod 600 test.pem
+  138  nova secgroup-add-rule default tcp 22 22 0.0.0.0/0
+  139  nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0
+  140  openstack flavor create --vcpus 4 --ram 4096 --disk 40 m1.nano
+  141  #openstack network create net1 --provider-physical-network tenant --provider-network-type
+  142  #openstack network create net1 --provider-physical-network tenant sriov-1 --provider-network-type vlan --provider-segment 600
+  143  openstack network create net1 --provider-physical-network  sriov-1 --provider-network-type vlan --provider-segment 600
+  144  openstack port create --network net1 --vnic-type direct sriov_port
+  145  #openstack server create --flavor <flavor> --image <image> --nic port-id=<id> vm1
+  146  #openstack subnet create public --subnet-range 172.120.0.0/24 --network public --allocation-pool start=172.120.0.210,end=172.120.0.230 --dns-nameserver 8.8.8.8 --no-dhcp
+  147  openstack subnet create net1 --name subnet1 20.0.0.0/24
+  148  openstack subnet create --network net1 --name subnet1 20.0.0.0/24
+  149  neutron subetnet-create 
+  150  neutron subnet-create 
+  151  neutron subnet-create --name subnet1 net1 20.0.0.0/24
+  152  #openstack server create --flavor m1.nano --nic port-id=4625e1aa-6e51-4a6f-99dd-88f52fcfddc0 --image rhel --key-name test  vm1
+  153  openstack server create --flavor m1.nano --nic port-id=4625e1aa-6e51-4a6f-99dd-88f52fcfddc0 --image rhel --key-name test  vm1
+  154  #openstack port create --network net1 --vnic-type direct sriov_port
+  155  openstack port delete 4625e1aa-6e51-4a6f-99dd-88f52fcfddc0
+  156  openstack port create --network net1 --vnic-type direct sriov_port
+  157  openstack server create --flavor m1.nano --nic port-id=1daf17bd-e5e5-4544-bda4-99f26159d857 --image rhel --key-name test  vm1
+  158  nova list
+  159  nova show vm1
+  160  ls
+  161  cat core_puddle_version 
+  162  ls
+  163  vi ~/containers.sh 
+  164  nova delete ade072a8-8ad6-4c36-9530-6cb5f9589c7d
+  165  openstack server create --flavor m1.nano --nic port-id=1daf17bd-e5e5-4544-bda4-99f26159d857 --image rhel --key-name test  vm2
+  166  nova list
+  167  ip a
+  168  iface=enp94s0f0
+  169  vlan_id=600
+  170  sudo ip link add link $iface name $iface.$vlan_id type vlan id $vlan_id
+  171  sudo ip link set dev $iface up
+  172  sudo ip link set dev $iface.$vlan_id up
+  173  sudo ip a a 20.0.0.101/16 brd 20.0.0.255 dev $iface.$vlan_id
+  174  ip a
+  175  ping 20.0.0.3
+  176  nova show vm1
+  177  nova list
+  178  nova show vm2
+  179  openstack security group list
+  180  openstack security group rule create a8ed69c2-a4a1-4fea-ab31-1f50afbdd8f7 --protocol tcp --dst-port 22:22 --remote-ip 0.0.0.0/0
+  181  openstack security group rule create a8ed69c2-a4a1-4fea-ab31-1f50afbdd8f7 --protocol icmp
+  182  ping 20.0.0.3
+  183  virsh console vm2
+  184  nova console vm2
+  185  nova console-log vm2
+  186  wget http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img
+  187  #openstack image create cirros --container-format bare --disk-format qcow2 --file  rhel-guest-image-7-6-210-x86-64-qcow2
+  188  openstack image create "cirros"   --file cirros-0.3.4-x86_64-disk.img   --disk-format qcow2 --container-format bare   --public;
+  189  #openstack server create --flavor m1.nano --nic port-id=1daf17bd-e5e5-4544-bda4-99f26159d857 --image rhel --key-name test  vm2
+  190  openstack port create --network net1 --vnic-type direct sriov_port
+  191  openstack server create --flavor m1.nano --nic port-id=0f16bdea-8f07-4f44-9249-87f27be17d1d --image cirros --key-name test  vm3
+  192  nova list
+  193  ping 20.0.0.7
+  194  nova list
+  195  nova console-log vm3
+  196  nova reboot vm3
+  197  nova console-log vm3
+  198  #openstack server create --flavor m1.nano --nic port-id=0f16bdea-8f07-4f44-9249-87f27be17d1d --image cirros --key-name test  vm3
+  199  nova reboot vm2
+  200  nova console-log vm2
+  201  ping 20.0.0.3
+  202  nova list
+  203  ssh redhat@vm2
+  204  ssh root@20.0.0.3
+  205  ls
+  206  ssh -i test.pem root@20.0.0.3
+  207  ssh -i test.pem host@20.0.0.3
+  208  nova console-log vm3
+  209  nova console-log vm2
+  210  ssh -i test.pem root@20.0.0.3
+  211  ssh -i test.pem cloud-user@20.0.0.3
+  212  nova list
+  213  #openstack server create --flavor m1.nano --nic port-id=0f16bdea-8f07-4f44-9249-87f27be17d1d --image cirros --key-name test  vm3
+  214  ls
+  215  ssh -i ~/test.pem cloud-user@20.0.0.3
+  216  nova console-log vm2 > vm2_console
+  217  #virt-customize --root-password password:Redhat01 -a rhel-guest-image-7.6-210.x86_64.qcow2
+  218  ls rhel-guest-image-7-6-210-x86-64-qcow2 
+  219  virt-customize --root-password password:Redhat01 -a rhel-guest-image-7-6-210-x86-64-qcow2
+  220  yum install virt-customize
+  221  sudo yum install virt-customize -y
+  222  git
+  223  ip r
+  224  ip a
+  225  ping google.com
+  226  ping download.devel.redhat.com
+  227  vi /etc/hosts
+  228  sudo vi /etc/hosts
+  229  cat /etc/resolv.conf 
+  230  systemctl status libvirtd
+  231  ping download.devel.redhat.com
+  232  ip r
+  233  ip a
+  234  ip a d 10.0.0.1/16 brd 10.0.255.255 dev enp94s0f2.10
+  235  sudo ip a d 10.0.0.1/16 brd 10.0.255.255 dev enp94s0f2.10
+  236  sudo ip a a 10.0.0.1/24 brd 10.0.255.255 dev enp94s0f2.10
+  237  ip a
+  238  ip r
+  239  ping download.devel.redhat.com
+  240  openstack overcloud image upload --update-existing
+  241  source ~/stackrc 
+  242  openstack overcloud image upload --update-existing
+  243  cd images/
+  244  ls
+  245  openstack overcloud image upload --update-existing
+  246  cd ..
+  247  #openstack server create --flavor m1.nano --nic port-id=1daf17bd-e5e5-4544-bda4-99f26159d857 --image rhel --key-name test  vm2
+  248  neutron port-list
+  249  source ~/overcloudrc
+  250  neutron port-list
+  251  ls
+  252  openstack image create rhel1 --container-format bare --disk-format qcow2 --file rhel-guest-image-7-6-210-x86-64-qcow2
+  253  openstack server create --flavor m1.nano --nic port-id=1daf17bd-e5e5-4544-bda4-99f26159d857 --image rhel1 --key-name test  vm2
+  254  nova list
+  255  ping 20.0.0.3
+  256  ssh root@20.0.0.3
+  257  history > history1
