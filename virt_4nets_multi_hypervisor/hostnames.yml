@@ -1,0 +1,13 @@
+
+parameter_defaults:
+    CloudDomain: redhat.local
+    ControllerSchedulerHints:
+        'capabilities:node': 'controller-%index%'
+    NovaComputeSchedulerHints:
+        'capabilities:node': 'compute-%index%'
+
+    CephStorageHostnameFormat: 'ceph-%index%'
+    ObjectStorageHostnameFormat: 'swift-%index%'
+    ControllerHostnameFormat: 'controller-%index%'
+    ComputeHostnameFormat: 'compute-%index%'
+

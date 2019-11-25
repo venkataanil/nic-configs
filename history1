@@ -1,0 +1,53 @@
+    1  1574518525 infrared plugin add all
+    2  1574518608 find -name 4_nets_multihypervisor
+    3  1574518611 find -name 4_nets_multihypervisor.yml
+    4  1574518613 find -name 4_nets_multihypervisor.yaml
+    5  1574518625 find -name "*mutlihyper*"
+    6  1574518641 find -name files
+    7  1574518654 ls ./plugins/virsh/files/
+    8  1574518708 find -name "*4_nets_multi_hypervisor""
+    9  1574518714 find -name "*4_nets_multi_hypervisor*"
+   10  1574518724 vi ./plugins/virsh/defaults/topology/network/4_nets_multi_hypervisor.yml
+   11  1574519991 ip a
+   12  1574520008 vi ./plugins/virsh/defaults/topology/network/4_nets_multi_hypervisor.yml
+   13  1574520219 ir virsh --host-address 10.1.41.194 --host-address 10.1.41.134 --host-key /root/.ssh/id_rsa --topology-nodes undercloud:1,controller:1,compute:2 --topology-network 4_nets_multi_hypervisor --host-memory-overcommit True  -v 2>&1 | tee log_virsh1
+   14  1574520252 vi ~/.ssh/authorized_keys 
+   15  1574520275 ir virsh --host-address 10.1.41.194 --host-address 10.1.41.134 --host-key /root/.ssh/id_rsa --topology-nodes undercloud:1,controller:1,compute:2 --topology-network 4_nets_multi_hypervisor --host-memory-overcommit True  -v 2>&1 | tee log_virsh1
+   16  1574520531 git status
+   17  1574520563 cp plugins/virsh/defaults/topology/network/4_nets_multi_hypervisor.yml ~/.infrared/plugins/virsh/defaults/topology/network/4_nets_multi_hypervisor.yml
+   18  1574520571 #ir virsh --host-address 10.1.41.194 --host-address 10.1.41.134 --host-key /root/.ssh/id_rsa --topology-nodes undercloud:1,controller:1,compute:2 --topology-network 4_nets_multi_hypervisor --host-memory-overcommit True  -v 2>&1 | tee log_virsh1 
+   19  1574520576 rm -f log_virsh1
+   20  1574520578 ir virsh --host-address 10.1.41.194 --host-address 10.1.41.134 --host-key /root/.ssh/id_rsa --topology-nodes undercloud:1,controller:1,compute:2 --topology-network 4_nets_multi_hypervisor --host-memory-overcommit True  -v 2>&1 | tee log_virsh1 
+   21  1574520623 touch /etc/sysconfig/network-scripts/ifcfg-enp94s0f3
+   22  1574520627 touch /etc/sysconfig/network-scripts/ifcfg-enp94s0f0
+   23  1574520647 virsh net-list
+   24  1574520651 brctl show
+   25  1574520693 rm -f log_virsh1
+   26  1574520698 ir virsh --host-address 10.1.41.194 --host-address 10.1.41.134 --host-key /root/.ssh/id_rsa --topology-nodes undercloud:1,controller:1,compute:2 --topology-network 4_nets_multi_hypervisor --host-memory-overcommit True  -v 2>&1 | tee log_virsh1 
+   27  1574521816 ir virsh --host-address 10.1.41.194 --host-address 10.1.41.134 --host-key /root/.ssh/id_rsa --topology-nodes undercloud:1,controller:1,compute:2 --topology-network 4_nets_multi_hypervisor --host-memory-overcommit True --cleanup yes -v 2>&1 | tee log_virsh1 
+   28  1574521894 rm -f log_virsh1 
+   29  1574521897 ir virsh --host-address 10.1.41.194 --host-address 10.1.41.134 --host-key /root/.ssh/id_rsa --topology-nodes undercloud:1,controller:1,compute:2 --topology-network 4_nets_multi_hypervisor --host-memory-overcommit True  -v 2>&1 | tee log_virsh1 
+   30  1574522244 ir virsh --host-address 10.1.41.194 --host-address 10.1.41.134 --host-key /root/.ssh/id_rsa --topology-nodes undercloud:1,controller:1,compute:2 --topology-network 4_nets_multi_hypervisor --host-memory-overcommit True --cleanup yes -v 2>&1 | tee log_virsh2
+   31  1574522284 ir virsh --host-address 10.1.41.194 --host-address 10.1.41.134 --host-key /root/.ssh/id_rsa --topology-nodes undercloud:1,controller:1,compute:2 --topology-network 4_nets_multi_hypervisor --host-memory-overcommit True --cleanup yes -v 2>&1 | tee log_virsh1 
+   32  1574522328 rm -f log_virsh1
+   33  1574522339 ir virsh --host-address 10.1.41.194 --host-address 10.1.41.134 --host-key /root/.ssh/id_rsa --topology-nodes undercloud:1,controller:1,compute:2 --topology-network 4_nets_multi_hypervisor --host-memory-overcommit True  -v 2>&1 | tee log_virsh1 
+   34  1574522672 ir virsh --host-address 10.1.41.194 --host-address 10.1.41.134 --host-key /root/.ssh/id_rsa --topology-nodes undercloud:1,controller:1,compute:2 --topology-network 4_nets_multi_hypervisor --host-memory-overcommit True --cleanup yes -v 2>&1 | tee log_virsh1 
+   35  1574522845 rm -f log_virsh1
+   36  1574522851 ir virsh --host-address 10.1.41.194 --host-address 10.1.41.134 --host-key /root/.ssh/id_rsa --topology-nodes undercloud:1,controller:1,compute:2 --topology-network 4_nets_multi_hypervisor --host-memory-overcommit True  -v 2>&1 | tee log_virsh1 
+   37  1574657583 ir virsh --host-address 10.1.41.194 --host-address 10.1.41.134 --host-key /root/.ssh/id_rsa --topology-nodes undercloud:1,controller:1,compute:2 --topology-network 4_nets_multi_hypervisor --host-memory-overcommit True  --cleanup yes -v 2>&1 | tee log_virsh1 
+   38  1574657785 brctl show
+   39  1574657831 for i in data isolated; do sudo ip l s $i down && brctl delbr $i; done
+   40  1574657834 brctl show
+   41  1574657850 ir virsh --host-address 10.1.41.194 --host-address 10.1.41.134 --host-key /root/.ssh/id_rsa --topology-nodes undercloud:1,controller:1,compute:2 --topology-network 4_nets_multi_hypervisor --host-memory-overcommit True  --cleanup yes -v 2>&1 | tee log_virsh1 
+   42  1574657956 ir virsh --host-address 10.1.41.194 --host-address 10.1.41.134 --host-key /root/.ssh/id_rsa --topology-nodes undercloud:1,controller:1,compute:2 --topology-network 4_nets_multi_hypervisor --host-memory-overcommit True  -v 2>&1 | tee log_virsh1 
+   43  1574658505 infrared tripleo-undercloud --version 13 --images-task rpm -v 2>&1 | tee log_uc1
+   44  1574671500 infrared tripleo-overcloud  --version 13 --introspect yes --tagging no --deploy no --deployment-files virt_4nets_multi_hypervisor --specific-node-ids true -v 2>&1 | tee log_oc1
+   45  1574672825 rm -f log_oc1
+   46  1574672837 infrared tripleo-overcloud  --version 13 --introspect yes --tagging no --deploy no --deployment-files virt_4nets_multi_hypervisor --specific-node-ids true -v 2>&1 | tee log_oc1
+   47  1574673398 infrared tripleo-overcloud  --version 13 --introspect no --tagging yes --deploy yes --deployment-files virt_4nets_multi_hypervisor --specific-node-ids true -v 2>&1 | tee log_deploy
+   48  1574679713 openstack overcloud delete overcloud -y
+   49  1574679741 source st
+   50  1574679770 ir ssh undercloud-0
+   51  1574684861 ls
+   52  1574684874 git status
+   53  1574685402 history > history1
