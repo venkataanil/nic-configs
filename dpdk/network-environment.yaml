@@ -35,10 +35,11 @@ parameter_defaults:
     TenantNetworkVlanID: 304
 
     NumDpdkInterfaceRxQueues: 2
-    ComputeOvsDpdkSriovParameters:
+    ComputeOvsDpdkParameters:
         KernelArgs: "default_hugepagesz=1GB hugepagesz=1G hugepages=128 intel_iommu=on iommu=pt isolcpus=1-15,33-47,17-31,49-63"
+        TunedProfileName: "cpu-partitioning"
         IsolCpusList: "1-15,33-47,17-31,49-63"
-        OvsDpdkSocketMemory: "1024"
+        OvsDpdkSocketMemory: "1024,1024"
         OvsDpdkMemoryChannels: "4"
         NovaReservedHostMemory: 4096
         OvsPmdCoreList: "1,33,17,49"
@@ -47,20 +48,14 @@ parameter_defaults:
         NovaComputeCpuSharedSet: "0,32,16,48"
 
     OvercloudControllerFlavor: "controller"
-    OvercloudComputeFlavor: "compute"
     OvercloudComputeOvsDpdkFlavor: "computeovsdpdk"
-    OvercloudComputeOvsDpdkSriovFlavor: "computeovsdpdk"
 
     ControllerCount: 1
     ComputeOvsDpdkCount: 1
 
-    NtpServer: "clock.redhat.com"
-    SshServerOptions:
-        UseDns: 'no'
-
-    NeutronBridgeMappings: "datacentre:br-ex,data1:br-link0,data2:br-link1"
+    NeutronBridgeMappings: "datacentre:br-ex,data1:br-link0,data2:br-link1,provider:br-provider"
     NeutronFlatNetworks: "datacentre"
-    NeutronNetworkVLANRanges: "data1:501:600,data2:501:600"
+    NeutronNetworkVLANRanges: "data1:501:600,data2:501:600,provider:600:700"
     NeutronNetworkType: ['vxlan', 'vlan']
     NeutronTunnelTypes: "vxlan"
     NeutronPhysnetNUMANodesMapping: {data1: [0], data2: [0]}
@@ -68,5 +63,5 @@ parameter_defaults:
 
     
 resource_registry:
-    OS::TripleO::Compute::Net::SoftwareConfig: computeovsdpdksriov.yaml
-    OS::TripleO::Controller::Net::SoftwareConfig: controller.yaml
+    OS::TripleO::ComputeOvsDpdk::Net::SoftwareConfig: vlans//computeovsdpdk.yaml
+    OS::TripleO::Controller::Net::SoftwareConfig: vlans//controller.yaml

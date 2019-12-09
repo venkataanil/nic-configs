@@ -185,8 +185,6 @@ resources:
               - type: interface
                 name: ens2f1
                 use_dhcp: false
-                dns_servers:
-                  get_param: DnsServers
                 addresses:
                 - ip_netmask:
                     list_join:
@@ -197,21 +195,12 @@ resources:
                 - ip_netmask: 169.254.169.254/32
                   next_hop:
                     get_param: EC2MetadataIp
-                - default: true
-                  next_hop:
-                    get_param: ControlPlaneDefaultRoute
               - type: ovs_bridge
                 name: bridge_name
-                dns_servers:
-                  get_param: DnsServers
                 use_dhcp: false
                 addresses:
                 - ip_netmask:
                     get_param: ExternalIpSubnet
-                routes:
-                - default: true
-                  next_hop:
-                    get_param: ExternalInterfaceDefaultRoute
                 members:
                 - type: interface
                   name: ens2f0
