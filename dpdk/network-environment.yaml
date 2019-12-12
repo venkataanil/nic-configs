@@ -39,13 +39,31 @@ parameter_defaults:
         KernelArgs: "default_hugepagesz=1GB hugepagesz=1G hugepages=128 intel_iommu=on iommu=pt isolcpus=1-15,33-47,17-31,49-63"
         TunedProfileName: "cpu-partitioning"
         IsolCpusList: "1-15,33-47,17-31,49-63"
-        OvsDpdkSocketMemory: "1024,1024"
+        OvsDpdkSocketMemory: "4096,4906"
         OvsDpdkMemoryChannels: "4"
         NovaReservedHostMemory: 4096
         OvsPmdCoreList: "1,33,17,49"
         OvsDpdkCoreList: "0,32,16,48"
         NovaVcpuPinSet: ['2-15','34-47','18-31','50-63']
+        NovaComputeCpuDedicatedSet: ['2-15','34-47','18-31','50-63']
         NovaComputeCpuSharedSet: "0,32,16,48"
+
+    NovaSchedulerAvailableFilters:
+        - "nova.scheduler.filters.all_filters"
+        - "nova.scheduler.filters.pci_passthrough_filter.PciPassthroughFilter"
+    NovaSchedulerDefaultFilters:
+        - "RetryFilter"
+        - "AvailabilityZoneFilter"
+        - "RamFilter"
+        - "ComputeFilter"
+        - "ComputeCapabilitiesFilter"
+        - "ImagePropertiesFilter"
+        - "ServerGroupAntiAffinityFilter"
+        - "ServerGroupAffinityFilter"
+        - "PciPassthroughFilter"
+        - "NUMATopologyFilter"
+        - "AggregateInstanceExtraSpecsFilter"
+        
 
     OvercloudControllerFlavor: "controller"
     OvercloudComputeOvsDpdkFlavor: "computeovsdpdk"
@@ -54,8 +72,7 @@ parameter_defaults:
     ComputeOvsDpdkCount: 1
 
     NeutronBridgeMappings: "datacentre:br-ex,data1:br-link0,data2:br-link1,provider:br-provider"
-    NeutronFlatNetworks: "datacentre"
-    NeutronNetworkVLANRanges: "data1:501:600,data2:501:600,provider:600:700"
+    NeutronFlatNetworks: "datacentre,data1,data2,provider"
     NeutronNetworkType: ['vxlan', 'vlan']
     NeutronTunnelTypes: "vxlan"
     NeutronPhysnetNUMANodesMapping: {data1: [0], data2: [0]}
