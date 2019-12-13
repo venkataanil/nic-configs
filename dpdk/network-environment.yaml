@@ -43,18 +43,13 @@ parameter_defaults:
         OvsDpdkMemoryChannels: "4"
         NovaReservedHostMemory: 4096
         OvsPmdCoreList: "1,33,17,49"
-        OvsDpdkCoreList: "0,32,16,48"
-        NovaVcpuPinSet: ['2-15','34-47','18-31','50-63']
+        OvsDpdkCoreList: "0,32,16,48"        
         NovaComputeCpuDedicatedSet: ['2-15','34-47','18-31','50-63']
         NovaComputeCpuSharedSet: "0,32,16,48"
 
-    NovaSchedulerAvailableFilters:
-        - "nova.scheduler.filters.all_filters"
-        - "nova.scheduler.filters.pci_passthrough_filter.PciPassthroughFilter"
     NovaSchedulerDefaultFilters:
         - "RetryFilter"
         - "AvailabilityZoneFilter"
-        - "RamFilter"
         - "ComputeFilter"
         - "ComputeCapabilitiesFilter"
         - "ImagePropertiesFilter"
@@ -63,7 +58,6 @@ parameter_defaults:
         - "PciPassthroughFilter"
         - "NUMATopologyFilter"
         - "AggregateInstanceExtraSpecsFilter"
-        
 
     OvercloudControllerFlavor: "controller"
     OvercloudComputeOvsDpdkFlavor: "computeovsdpdk"
