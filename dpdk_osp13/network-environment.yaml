@@ -48,6 +48,10 @@ parameter_defaults:
         OvsDpdkCoreList: "0,12,1,13"
         NovaVcpuPinSet: [4,6,8,10,16,18,20,22,5,7,9,11,17,19,21,23]
 
+    NovaSchedulerAvailableFilters:
+        - "nova.scheduler.filters.all_filters"
+        - "nova.scheduler.filters.pci_passthrough_filter.PciPassthroughFilter"
+
     NovaSchedulerDefaultFilters:
         - "RetryFilter"
         - "AvailabilityZoneFilter"
