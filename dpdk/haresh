@@ -1,0 +1,206 @@
+ssh root@panther06.qa.lab.tlv.redhat.com pass 12345678
+
+TestPMD/TRex Image Creation:
+openstack image create  --container-format bare --disk-format qcow2  --file /home/heat-admin/rhel_trex_testpmd.qcow2 TrexTestPMD
+openstack keypair create test > test.pem
+chmod 600 test.pem
+
+Security group creation:
+for group in $(openstack security group list| awk ' /default/ {print $2;}'); do openstack security group rule create --proto icmp $group; openstack security group rule create --proto tcp --dst-port 22 $group; done
+
+Flavor creation:
+openstack flavor create --id 1 --vcpus 8 --ram 8192 --disk 40 F1
+openstack flavor set --property  hw:mem_page_size=large --property hw:cpu_policy=dedicated F1
+####openstack flavor set --property hw:mem_page_size=large --property hw:cpu_thread_policy=require --property  hw:cpu_policy=dedicated --property hw:numa_nodes=1 --property hw:numa_cpus.1=5,7,9,11,25,27,29,31 --property hw:numa_mem.1=1024 F2
+
+openstack flavor create --id 2 --vcpus 8 --ram 8192 --disk 40 MQ
+openstack flavor set --property  hw:mem_page_size=large --property hw:cpu_policy=dedicated --property hw:vif_multiqueue_enabled=true MQ
+openstack image set --property hw_vif_multiqueue_enabled=true  TrexTestPMD
+
+Management Network:
+openstack network create --internal --provider-network-type vlan --provider-physical-network dpdk-mgmt --provider-segment 550 M1
+neutron subnet-create M1 8.8.8.0/24 --name M1S1
+
+Source Provider Network creation:
+###openstack network create --internal --provider-network-type vxlan D1
+openstack network create --internal --provider-network-type vlan --provider-physical-network dpdk-data0 --provider-segment 30 --disable-port-security D1
+neutron subnet-create D1 6.6.6.0/24 --name D1S1
+
+####openstack network create --internal --provider-network-type vxlan D2
+openstack network create --internal --provider-network-type vlan --provider-physical-network dpdk-data1 --provider-segment 31 --disable-port-security D2
+neutron subnet-create D2 7.7.7.0/24 --name D2S2
+
+Destination Provider Network creation: 
+openstack network create --internal --provider-network-type vlan --provider-physical-network sriov-1 --provider-segment 30 --disable-port-security S1
+neutron subnet-create S1 6.6.6.0/24 --disable-dhcp --name S1S1
+
+openstack network create --internal --provider-network-type vlan --provider-physical-network sriov-2 --provider-segment 31 --disable-port-security S2
+neutron subnet-create S2 7.7.7.0/24 --disable-dhcp --name S2S2
+
+Neutron Port creation:
+openstack port create --network S1 --vnic-type direct-physical --mac-address f8:f2:1e:03:c8:c4 PMD1
+openstack port create --network S2 --vnic-type direct-physical --mac-address f8:f2:1e:03:c8:c6 PMD2 
+
+openstack port create --network S1 --vnic-type direct-physical --mac-address f8:f2:1e:03:bf:e4 TRex1
+openstack port create --network S2 --vnic-type direct-physical --mac-address f8:f2:1e:03:bf:e6 TRex2
+
+openstack port create --network S1 --vnic-type direct PMD1
+openstack port create --network S2 --vnic-type direct PMD2 
+
+openstack port create --network S1 --vnic-type direct TRex1
+openstack port create --network S2 --vnic-type direct TRex2
+
+openstack router create HareshRouter
+neutron router-gateway-set HareshRouter public_net
+openstack router add subnet HareshRouter M1S1
+
+
+VM Creation:
+openstack server create --flavor F1 --image TrexTestPMD --nic net-id=9e018be0-c434-42ac-9096-87391ba60e89 --nic net-id=a4762ea5-db4f-420a-8fa1-91ee157c5ab8 --key-name test --availability-zone nova:compute-0.localdomain TestPMD
+openstack server create --flavor F1 --image TrexTestPMD --nic net-id=9e018be0-c434-42ac-9096-87391ba60e89 --nic port-id=270f0fbe-350b-4662-a3d3-1dc8e06f3665 --key-name test --availability-zone nova:compute-1.localdomain TRex
+
+Juniper Switch:
+set vlan550 vlan-id 550
+set vlan551 vlan-id 551
+
+delete interfaces xe-0/0/25 unit 0 family ethernet-switching vlan                    
+delete interfaces xe-0/0/25 unit 0 family ethernet-switching interface-mode trunk    
+
+set interfaces xe-0/0/32 unit 0 family ethernet-switching interface-mode trunk
+set interfaces xe-0/0/6 unit 0 family ethernet-switching vlan members vlan700
+
+
+Output capture:
+cat /proc/meminfo
+lscpu
+lspci -vvv -nn | grep Ethernet
+cat /etc/default/grub
+
+sudo virsh numatune 1 --mode strict --nodeset 1 --live
+
+sudo virsh vcpupin 1 --vcpu 0 --cpulist 5 --live
+sudo virsh vcpupin 1 --vcpu 1 --cpulist 7 --live
+sudo virsh vcpupin 1 --vcpu 2 --cpulist 9 --live
+sudo virsh vcpupin 1 --vcpu 3 --cpulist 11 --live
+sudo virsh vcpupin 1 --vcpu 4 --cpulist 25 --live
+sudo virsh vcpupin 1 --vcpu 5 --cpulist 27 --live
+sudo virsh vcpupin 1 --vcpu 6 --cpulist 29 --live
+sudo virsh vcpupin 1 --vcpu 7 --cpulist 31 --live
+
+sudo virsh emulatorpin 1 --cpulist 5 --live
+
+sudo ovs-vsctl get open_vswitch . other_config
+sudo ovs-vsctl set open_vswitch . other_config:pmd-cpu-mask="1400014"
+sudo ovs-vsctl set open_vswitch . other_config:pmd-cpu-mask="C0000C"
+
+sudo ovs-appctl dpif-netdev/pmd-rxq-show
+sudo ovs-appctl dpif-netdev/pmd-stats-show
+sudo ovs-appctl dpif-netdev/pmd-stats-clear
+
+sudo ovs-vsctl set interface dpdk2 other_config:pmd-rxq-affinity="0:3,1:33"
+
+sudo ovs-vsctl set Interface dpdk2 options:n_txq=1
+sudo ovs-vsctl set Interface dpdk3 options:n_txq=1
+sudo ovs-vsctl set interface dpdk2 other_config:pmd-rxq-affinity="0:3"
+sudo ovs-vsctl set interface dpdk3 other_config:pmd-rxq-affinity="0:13"
+
+sudo ovs-vsctl set Interface vhu08d5dde7-c2 options:n_rxq=1
+sudo ovs-vsctl set Interface vhu2078a804-c2 options:n_rxq=1
+sudo ovs-vsctl set Interface vhu4032d42e-54 options:n_rxq=1
+
+sudo ovs-vsctl set interface vhu08d5dde7-c2 other_config:pmd-rxq-affinity="0:22" 
+sudo ovs-vsctl set interface vhu2078a804-c2 other_config:pmd-rxq-affinity="0:13"
+sudo ovs-vsctl set interface vhu4032d42e-54 other_config:pmd-rxq-affinity="0:3"
+
+sudo ovs-vsctl set Interface dpdk2 options:n_rxq_desc=4096 options:n_txq_desc=1024
+
+sudo ovs-vsctl --no-wait set Open_vSwitch . other_config:emc-insert-inv-prob=0
+
+TestPMD Start:
+[root@testpmd]# tuned-adm profile cpu-partitioning
+[root@testpmd]# cd /root/dpdk/x86_64-native-linuxapp-gcc/kmod/
+[root@testpmd kmod]# modprobe uio
+[root@testpmd kmod]# insmod igb_uio.ko
+
+[root@testpmd]# lspci <<Try ethtool -i <Eth1> to get controller number
+
+ip route del 6.6.6.0/24
+ip route del 7.7.7.0/24
+route del default gw 6.6.6.1
+route del default gw 7.7.7.1
+
+
+# Bind the devices with igb_uio driver
+[root@testpmd]# cd /root/dpdk/usertools
+[root@testpmd usertools]# ./dpdk-devbind.py -b igb_uio 0000:00:04.0
+[root@testpmd usertools]# ./dpdk-devbind.py -b igb_uio 0000:00:05.0
+
+[root@testpmd ~]# cd /root/dpdk/x86_64-native-linuxapp-gcc/app
+[root@testpmd app]#  ./testpmd -l 2,3,7 -n 4 --socket-mem 1024 -- -i --nb-cores=2 --txqflags=0xf00 --disable-hw-vlan --eth-peer=0,f8:f2:1e:03:bf:e4 --eth-peer=1,f8:f2:1e:03:bf:e6 --forward-mode=mac --rxd=1024 --txd=1024 --max-pkt-len=9000
+
+./testpmd -l 2,3,7 -n 4 --socket-mem 1024 -w 00:05.0,support-multi-driver=1 -w 00:06.0,support-multi-driver=1 -- -i --nb-cores=2 --txqflags=0xf00 --disable-hw-vlan --eth-peer=0,f8:f2:1e:03:bf:e4 --eth-peer=1,f8:f2:1e:03:bf:e6 --forward-mode=mac --rxd=1024 --txd=1024
+
+./testpmd -c f -n 4 -- -i
+
+testpmd -l .. -w PCI_ID1,multi-driver-support=1 -w PCI_ID2,multi-driver-support=1
+
+<access mode="shared"/>
+
+TRex Start:
+
+[root@trex]# tuned-adm profile cpu-partitioning
+[root@trex]# cat /etc/trex_cfg.yaml 
+### Config file generated by dpdk_setup_ports.py ###
+
+- port_limit: 2
+  version: 2
+  interfaces: ['00:05.0', '00:06.0']
+  port_info:
+      - dest_mac: f8:f2:1e:03:c8:c4     (S)bf:e4: (D)c8:c4 --testpmd port 0 ---test pmd port 1----(S)c8:c6: bf:e6(D)
+        src_mac:  f8:f2:1e:03:bf:e4
+        ip         : 6.6.6.7
+        default_gw : 7.7.7.7
+      - dest_mac: f8:f2:1e:03:c8:c6
+        src_mac:  f8:f2:1e:03:bf:e6      (S)bf:e6 (D) c8:c6---testpmdPort1--- testpmd port 0 ---(S)c8:c4  bf:e4(D) 
+        ip         : 7.7.7.7
+        default_gw : 6.6.6.7
+
+  platform:
+      master_thread_id: 2
+      latency_thread_id: 3
+      dual_if:
+        - socket: 0
+          threads: [4,5,6,7]
+
+
+# We have earlier identified that (4,5) , (6,7) , (8,9) are CPU pairs. Refer cpu pinning
+
+[root@trex ~]# cd v2.28
+[root@trex v2.28]# ./t-rex-64 -f cap2/Perf_bench.yaml  -d 60 -m 8mpps -c 4 --cfg /etc/trex_cfg.yaml <<<,This is to check basic connectivity
+
+In Trex server
+./t-rex-64 -i -c 4 --cfg /etc/trex_cfg.yaml
+# -i -> stateless mode
+# -c <number of cores used >
+
+In Trex Console
+
+./trex-console
+tui>start -f stl/flow_stats_combined.py -m 50% -t fsize=64 -d 7200 <<<<This file is for latency
+# -m <percentage of maximum bandwidth>
+# -t fsize=<packet size>   
+# -d <test duration in seconds>
+
+./trex-console
+# And then send your traffic at various speeds
+# 10.46 millions of packet per interface
+start -f stl/lot_flows.py -m 10.5mpps -d 60 -t fsize=64  <<<<This file is for multiple flows 
+start -f stl/lot_flows_512.py -m 2mpps -d 60 -t fsize=512
+start -f stl/lot_flows_1500.py -m 1.6mpps -d 60 -t fsize=1500
+start -f stl/lot_flows_9000.py -m 0.125mpps -d 60 -t fsize=9000
+start -f imix.py -m 4mpps -d 60
+# Track stats
+tui
+# then help and check all options, typically ‘l’ for latency
+Note: The packet size used in tests can be changed using fsize 
+How to find the maximum throughput (in mpps) with zero packet loss ?
